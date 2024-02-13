@@ -1,6 +1,8 @@
 <script>
     import Cell from "../components/cell.svelte";
   
+    const version="0.2"
+
     let row = 3;
     let col = row;
   
@@ -18,7 +20,7 @@
     }
 
     const is_valid_move = (x, y) => {
-      return x >= 0 && y >= 0 && x < row && y < col && maze[x][y] != 0;
+      return x >= 0 && y >= 0 && x < row && y < col && maze[x][y] != 0 && maze[x][y] != 2;
     };
   
     const find_path = async (x, y) => {
@@ -33,10 +35,15 @@
         maze[x][y] = 2;
         maze = [...maze];
   
-        if (await find_path(x + 1, y)) return true;
-  
+        
         if (await find_path(x, y + 1)) return true;
-  
+        
+        if (await find_path(x + 1, y)) return true;
+
+        if (await find_path(x - 1, y)) return true;
+
+        if (await find_path(x, y - 1)) return true;
+        
         maze[x][y] = 1;
         maze = [...maze];
         return false;
@@ -52,7 +59,7 @@
   
   <main>
     <div class="config">
-      LABIRINTO {row} x {col}
+      LABIRINTO {row} x {col} - v{version}
       <input
         type="range"
         min="4"
@@ -88,10 +95,10 @@
     }
   
     .config {
-      width: 60%;
+      width: 65%;
       margin: auto;
       display: grid;
-      grid-template-columns: 2fr 3fr 0.5fr;
+      grid-template-columns: 3fr 4fr 0.5fr;
       gap: 1rem;
       margin-top: 2rem;
       font-size: 2rem;
